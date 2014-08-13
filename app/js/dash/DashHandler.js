@@ -320,7 +320,6 @@ Dash.dependencies.DashHandler = function () {
 
                     startIdx = segmentRange.start;
                     endIdx = segmentRange.end;
-
                     for (i = startIdx;i <= endIdx; i += 1) {
 
                         seg = getIndexBasedSegment.call(
@@ -364,6 +363,7 @@ Dash.dependencies.DashHandler = function () {
                 start = Math.floor(availabilityWindow.start / duration);
                 end = Math.floor(availabilityWindow.end / duration);
                 range = {start: start, end: end};
+                console.log("decideSegmentListRangeForTemplate: segment range start=" + range.start + " end=" + range.end);
                 return range;
             }
 
@@ -432,13 +432,14 @@ Dash.dependencies.DashHandler = function () {
                 waitingTime,
                 getRange = function() {
                     range = self.timelineConverter.calcSegmentAvailabilityRange(representation, isDynamic);
-
                     if (range.end > 0) {
+                    	console.log("waitForAvailabilityWindow: done:" + " range.start=" + range.start + " range.end=" + range.end);                    	
                         deferred.resolve(range);
                     } else {
                         // range.end represents a time gap between the current wall-clock time and the availability time of the first segment.
                         // A negative value means that no segments are available yet, we should wait until segments become available
                         waitingTime = Math.abs(range.end) * 1000;
+                    	console.log("waitForAvailabilityWindow: wait: waitingTime=" + waitingTime + " range.end=" + range.end);                        
                         setTimeout(getRange, waitingTime);
                     }
                 };
@@ -510,7 +511,8 @@ Dash.dependencies.DashHandler = function () {
                     range = decideSegmentListRangeForTemplate.call(self, representation);
                     startIdx = range.start;
                     endIdx = range.end;
-
+                    console.log("range start " + range.start);
+                    console.log("range start " + range.end);
                     for (i = startIdx; i < endIdx; i += 1) {
                         s = list.SegmentURL_asArray[i];
 
@@ -702,7 +704,7 @@ Dash.dependencies.DashHandler = function () {
                 upperIdx,
                 lowerIdx;
 
-            if (!segments) {
+            if (!segments || segments.length == 0) {
                 updateRequired = true;
             } else {
                 lowerIdx = segments[0].availabilityIdx;

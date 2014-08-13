@@ -274,6 +274,13 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
         }
     }
 
+    function viewpointChanged(e) {
+        
+    }
+    function viewpointlistUpdated(e) {
+        $scope.availableViewpoints = e.data.viewpointlist;
+    }
+    
     function metricChanged(e) {
         var metrics,
             point,
@@ -404,7 +411,9 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
     player.startup();
     player.addEventListener("error", onError.bind(this));
     player.addEventListener("metricChanged", metricChanged.bind(this));
-
+    player.addEventListener("viewpointChanged", viewpointChanged.bind(this));
+    player.addEventListener("viewpointlistUpdated", viewpointlistUpdated.bind(this));
+    
     player.attachView(video);
     player.setAutoPlay(true);
 
@@ -414,7 +423,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
     //
     ////////////////////////////////////////
 
-    $scope.abrEnabled = true;
+    $scope.abrEnabled = false;
 
     $scope.setAbrEnabled = function (enabled) {
         $scope.abrEnabled = enabled;
@@ -442,6 +451,21 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
         player.setQualityFor(type, newQuality);
     }
 
+    $scope.viewNext = function (type) {
+        player.setPlaybackViewpointFor(type, "next");
+    }
+
+    $scope.viewPrev = function (type) {
+    	player.setPlaybackViewpointFor(type, "prev");
+    }
+    
+    $scope.setViewpoint = function (item) {
+        player.setPlaybackViewpointFor("video", item.id);
+    }
+    
+    
+    $scope.availableViewpoints = null;
+    
     ////////////////////////////////////////
     //
     // Page Setup
@@ -503,6 +527,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
         $scope.availableStreams = data.items;
     });
 
+    
     Notes.query(function (data) {
         $scope.releaseNotes = data.notes;
     });

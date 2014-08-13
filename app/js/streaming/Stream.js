@@ -257,17 +257,23 @@ MediaPlayer.dependencies.Stream = function () {
                 videoReady = false,
                 audioReady = false,
                 textTrackReady = false,
-                self = this;
+                self = this,
+                viewpointId = self.viewpointController.getPlaybackViewpoint("video");                
 
+            self.manifestExt.getViewpointList(manifest, periodInfo.index).then(
+        		function(viewpointList){
+        			self.uiModel.viewpointlistUpdated(viewpointList);
+        		}
+            );
             // Figure out some bits about the stream before building anything.
             //self.debug.log("Gathering information for buffers. (1)");
             self.manifestExt.getDuration(manifest, periodInfo).then(
                 function (/*duration*/) {
-                    self.manifestExt.getVideoData(manifest, periodInfo.index).then(
+                    self.manifestExt.getVideoData(manifest, periodInfo.index, viewpointId).then(
                         function (videoData) {
                             if (videoData !== null) {
                                 //self.debug.log("Create video buffer.");
-                                self.manifestExt.getDataIndex(videoData, manifest, periodInfo.index).then(
+                                self.manifestExt.getDataIndex(videoData, manifest, periodInfo.index, viewpointId).then(
                                     function (index) {
                                         videoTrackIndex = index;
                                         //self.debug.log("Save video track: " + videoTrackIndex);
@@ -759,12 +765,14 @@ MediaPlayer.dependencies.Stream = function () {
         videoModel: undefined,
         manifestLoader: undefined,
         manifestModel: undefined,
+        uiModel : undefined,
         mediaSourceExt: undefined,
         sourceBufferExt: undefined,
         bufferExt: undefined,
         manifestExt: undefined,
         fragmentController: undefined,
         abrController: undefined,
+        viewpointController: undefined,        
         fragmentExt: undefined,
         protectionModel: undefined,
         protectionController: undefined,

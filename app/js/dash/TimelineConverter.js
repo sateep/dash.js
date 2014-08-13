@@ -131,6 +131,7 @@ Dash.dependencies.TimelineConverter = function () {
             // and server time as well
             period.clientServerTimeShift = actualLiveEdge - expectedLiveEdge;
             period.isClientServerTimeSyncCompleted = true;
+            console.log("clientServerTimeShift=" + period.clientServerTimeShift  + " expectedLiveEdge" + expectedLiveEdge + " actualLiveEdge=" + actualLiveEdge)
         },
 
         calcMSETimeOffset = function (representation) {

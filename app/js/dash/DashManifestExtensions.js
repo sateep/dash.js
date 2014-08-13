@@ -219,7 +219,7 @@ Dash.dependencies.DashManifestExtensions.prototype = {
         return Q.when(-1);
     },
 
-    getVideoData: function (manifest, periodIndex) {
+    getVideoData: function (manifest, periodIndex, viewpointId) {
         "use strict";
         //return Q.when(null);
         //------------------------------------
@@ -238,6 +238,9 @@ Dash.dependencies.DashManifestExtensions.prototype = {
                 var found = false;
                 for (i = 0, len = results.length; i < len; i += 1) {
                     if (results[i] === true) {
+                    	// Check if viewpoint is specified and then equal to requested viewpoint matches else ski the adaptation. 
+                    	if(viewpointId !== null && viewpointId !== adaptations[i].Viewpoint.value)
+                    		continue;
                         found = true;
                         deferred.resolve(self.processAdaptation(adaptations[i]));
                     }
@@ -251,6 +254,42 @@ Dash.dependencies.DashManifestExtensions.prototype = {
         return deferred.promise;
     },
 
+    getViewpointList: function (manifest, periodIndex) {
+        "use strict";
+
+        var self = this,
+            adaptations = manifest.Period_asArray[periodIndex].AdaptationSet_asArray,
+            i,
+            len,
+            deferred = Q.defer(),            
+            viewpointList = [],
+            funcs = [];            
+
+        for (i = 0, len = adaptations.length; i < len; i += 1) {
+            funcs.push(this.getIsVideo(adaptations[i]));
+        }
+        Q.all(funcs).then(
+            function (results) {
+            	var found = false;
+                for (i = 0, len = results.length; i < len; i += 1) {
+                    if (results[i] === true) {
+                    	if(adaptations[i].hasOwnProperty("Viewpoint")) {
+                    		viewpointList.push({id: adaptations[i].Viewpoint.value});
+                    		found = true;
+                    	}
+                    }
+                }
+                if (!found) {
+                    deferred.resolve(null);
+                } else {
+                	deferred.resolve(self.processAdaptation(viewpointList));
+                }
+            }
+        );
+
+        return deferred.promise;
+    },
+    
     getTextData: function (manifest, periodIndex) {
         "use strict";
         //return Q.when(null);

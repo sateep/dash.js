@@ -309,6 +309,7 @@
         manifestExt: undefined,
         fragmentController: undefined,
         abrController: undefined,
+        viewpointController: undefined,
         fragmentExt: undefined,
         capabilities: undefined,
         debug: undefined,

@@ -61,6 +61,7 @@
     <script src="app/js/streaming/BufferExtensions.js"></script>
     <script src="app/js/streaming/FragmentController.js"></script>
     <script src="app/js/streaming/AbrController.js"></script>
+    <script src="app/js/streaming/ViewpointController.js"></script>
     <script src="app/js/streaming/FragmentLoader.js"></script>
     <script src="app/js/streaming/FragmentModel.js"></script>
     <script src="app/js/streaming/StreamController.js"></script>
@@ -87,6 +88,8 @@
     <!-- Metrics -->
     <script src="app/js/streaming/vo/MetricsList.js"></script>
     <script src="app/js/streaming/MetricsModel.js"></script>
+    <script src="app/js/streaming/UiModel.js"></script>
+    
     <script src="app/js/streaming/vo/metrics/BufferLevel.js"></script>
     <script src="app/js/streaming/vo/metrics/HTTPRequest.js"></script>
     <script src="app/js/streaming/vo/metrics/PlayList.js"></script>
@@ -117,7 +120,7 @@
 <body ng-controller="DashController">
     <div class="modal fade" id="streamModal">
         <div class="modal-dialog">
-            <div class="list-group modal-list">
+              <div class="list-group modal-list">
                 <a
                    ng-repeat="item in availableStreams"
                    href="#"
@@ -127,7 +130,7 @@
                    ng-show="isStreamAvailable(item.browsers)">
                     {{item.name}}
                 </a>
-            </div>
+              </div>
         </div>
     </div>
 
@@ -183,14 +186,14 @@
                         <div class="btn-group">
                             <button
                                 type="button"
-                                class="btn btn-default"
+                                class="btn btn-default active"
                                 ng-class="{active:abrEnabled == false}"
                                 ng-click="setAbrEnabled(false)">
                                 <span>Off</span>
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-default active"
+                                class="btn btn-default"
                                 ng-class="{active:abrEnabled == true}"
                                 ng-click="setAbrEnabled(true)">
                                 <span>On</span>
@@ -216,6 +219,23 @@
                             </button>
                         </div>
                     </div>
+                    
+				 <div class="panel-heading panel-top">
+				            <div class="list-group">
+				                 <a
+				                   ng-repeat="item in availableViewpoints"
+				                   href="#"
+				                   class="list-group-item"
+				                   ng-click="setViewpoint(item)"
+				                   data-dismiss="modal"
+				                   >
+				                    {{item.id}}
+				                </a>
+				        </div>
+				    </div>
+                    
+                    
+                    
                     <div class="panel-body panel-stats">
                         <p class="text-warning">{{videoBitrate}} kbps</p>
                         <p class="text-primary">Rep Index: <span class="text-success">{{videoIndex}}</span><span class="text-warning">{{videoPendingIndex}}</span>/<span class="text-success">{{videoMaxIndex}}</span></p>

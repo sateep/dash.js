@@ -102,7 +102,9 @@ MediaPlayer = function (aContext) {
         eventBus: undefined,
         capabilities: undefined,
         abrController: undefined,
+        viewpointController: undefined,        
         metricsModel: undefined,
+        uiModel: undefined,
         metricsExt: undefined,
         bufferExt: undefined,
 
@@ -174,6 +176,10 @@ MediaPlayer = function (aContext) {
             this.abrController.setPlaybackQuality(type, value);
         },
 
+        setPlaybackViewpointFor: function (type, id) {
+            this.viewpointController.setPlaybackViewpointFor(type, id);
+        },
+        
         getAutoSwitchQuality : function () {
             return this.abrController.getAutoSwitchBitrate();
         },
@@ -182,6 +188,7 @@ MediaPlayer = function (aContext) {
             this.abrController.setAutoSwitchBitrate(value);
         },
 
+        
         attachView: function (view) {
             if (!initialized) {
                 throw "MediaPlayer not initialized!";
